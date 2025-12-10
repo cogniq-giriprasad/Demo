@@ -64,20 +64,37 @@
 
 /* ---------- RESET ---------- */
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { 
+  scroll-behavior: smooth; 
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 body {
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
   background: 
     radial-gradient(ellipse 1000px 600px at 0% 0%, rgba(114,47,55,0.08), transparent),
     radial-gradient(ellipse 800px 500px at 100% 100%, rgba(201,169,98,0.05), transparent),
     linear-gradient(160deg, var(--bg) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+  background-attachment: fixed;
   color: var(--text);
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 img { max-width: 100%; height: auto; display: block; }
-a { color: inherit; text-decoration: none; }
+a { 
+  color: inherit; 
+  text-decoration: none; 
+  -webkit-touch-callout: none;
+}
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
 
 /* ---------- CONTAINER ---------- */
 .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
@@ -917,7 +934,15 @@ h1,h2,h3,h4 { font-family: 'Playfair Display', serif; color: var(--text); margin
 }
 .chat-send:hover { transform: scale(1.08); filter: brightness(1.1); }
 
-@media (max-width: 480px) { .chat-window { right: 12px; left: 12px; bottom: 94px; width: auto; } }
+@media (max-width: 480px) { 
+  .chat-window { 
+    right: 12px; 
+    left: 12px; 
+    bottom: 94px; 
+    width: auto; 
+    max-height: calc(100vh - 120px);
+  } 
+}
 
 /* Typing indicator */
 .typing-dots { display: inline-flex; gap: 4px; align-items: center; }
@@ -935,3 +960,399 @@ h1,h2,h3,h4 { font-family: 'Playfair Display', serif; color: var(--text); margin
 
 /* ---------- ACCESSIBILITY ---------- */
 :focus-visible { outline: 3px solid rgba(212,175,55,0.4); outline-offset: 2px; }
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* --- Tablet (max-width: 900px) --- */
+@media (max-width: 900px) {
+  .container { padding: 0 24px; }
+  
+  .section { padding: 70px 0; }
+  .section-title { font-size: clamp(1.5rem, 5vw, 2rem); }
+  
+  /* Hero */
+  .hero { padding: 60px 0 50px; }
+  .hero-grid { 
+    grid-template-columns: 1fr; 
+    gap: 40px;
+    text-align: center;
+  }
+  .hero-copy .display { font-size: clamp(1.8rem, 6vw, 2.8rem); }
+  .hero-ctas { justify-content: center; }
+  .hero-badge { font-size: 0.78rem; }
+  .hero-scroll-hint { margin-top: 40px; }
+  
+  .plate-float { 
+    width: 100%; 
+    max-width: 340px; 
+    height: 220px;
+    margin: 0 auto;
+  }
+  
+  /* About */
+  .about-grid { 
+    grid-template-columns: 1fr; 
+    gap: 40px; 
+    text-align: center;
+  }
+  .about-media-wrap { margin: 0 auto; max-width: 350px; }
+  .about-media { height: 280px; }
+  .about-badge { right: 0; }
+  .about-features { justify-content: center; flex-wrap: wrap; }
+  .about-bg-accent { display: none; }
+  
+  /* Menu */
+  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  
+  /* Specials */
+  .specials-showcase { 
+    grid-template-columns: 1fr; 
+    gap: 20px;
+  }
+  .special-item.special-featured { grid-row: auto; }
+  .special-number { font-size: 2.5rem; }
+  
+  /* Reservation */
+  .reservation-content { 
+    grid-template-columns: 1fr; 
+    gap: 40px; 
+  }
+  .reservation-info { text-align: center; }
+  .reservation-info::before { left: 50%; transform: translateX(-50%); }
+  .reservation-contact { align-items: center; }
+  .contact-item:hover { transform: none; }
+  .reservation-form { padding: 32px 24px; }
+  
+  /* Contact */
+  .contact-wrapper { 
+    grid-template-columns: 1fr; 
+    gap: 30px;
+  }
+  .contact-info-card { padding: 32px 24px; }
+  .map-container iframe { min-height: 280px; }
+}
+
+/* --- Mobile Large (max-width: 768px) --- */
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+  
+  .container { padding: 0 20px; }
+  
+  /* Header */
+  .header-inner { padding: 12px 0; }
+  .brand-name { font-size: 1rem; }
+  .brand-logo { width: 38px; height: 38px; }
+  
+  .nav-toggle { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+  .nav-list {
+    display: none; 
+    flex-direction: column; 
+    position: absolute; 
+    top: 100%; 
+    left: 0; 
+    right: 0;
+    background: var(--bg-2); 
+    padding: 20px; 
+    gap: 16px; 
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-list.open { display: flex; }
+  .nav-list a { 
+    font-size: 1rem; 
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .nav-list a::after { display: none; }
+  .nav-list li:last-child a { border-bottom: none; }
+  
+  /* Hero */
+  .hero { padding: 50px 0 40px; }
+  .hero-copy .display { 
+    font-size: clamp(1.6rem, 7vw, 2.4rem); 
+    line-height: 1.15;
+  }
+  .lead { font-size: 0.95rem; margin-bottom: 20px; }
+  .hero-ctas { 
+    flex-direction: column; 
+    gap: 12px;
+    width: 100%;
+  }
+  .hero-ctas .btn { 
+    width: 100%; 
+    justify-content: center;
+    padding: 16px 24px;
+  }
+  
+  .plate-float { height: 200px; }
+  
+  /* Sections */
+  .section { padding: 60px 0; }
+  .section-label { font-size: 0.75rem; letter-spacing: 2px; }
+  .section-header-center { margin-bottom: 40px; }
+  
+  /* Menu */
+  .menu-grid { 
+    grid-template-columns: 1fr; 
+    gap: 16px;
+  }
+  .menu-card { padding: 24px 20px; }
+  .menu-card-icon { font-size: 2.2rem; }
+  .menu-card h3 { font-size: 1.1rem; }
+  
+  /* Specials */
+  .special-item { padding: 24px 20px; }
+  .special-number { font-size: 2rem; top: 12px; right: 14px; }
+  
+  /* Reservation */
+  .section-reservation { padding: 60px 0; }
+  .reservation-form { padding: 28px 20px; }
+  .reservation-form .form-grid { 
+    grid-template-columns: 1fr; 
+    gap: 16px;
+  }
+  .reservation-form .form-label:nth-child(6) { grid-column: auto; }
+  .reservation-form .form-actions { 
+    flex-direction: column; 
+    gap: 12px;
+  }
+  .reservation-form .btn-primary,
+  .reservation-form .btn-ghost { 
+    width: 100%; 
+    justify-content: center;
+    padding: 16px 24px;
+  }
+  
+  /* Contact */
+  .contact-info-card { padding: 28px 20px; }
+  .contact-row { padding: 12px 0; }
+  .social-links { justify-content: center; }
+  .map-container iframe { min-height: 250px; }
+  
+  /* Cards */
+  .grid { grid-template-columns: 1fr; gap: 16px; }
+  .card { padding: 24px 20px; }
+  
+  /* Footer */
+  .site-footer { padding: 30px 0; }
+  .site-footer p { font-size: 0.85rem; }
+}
+
+/* --- Mobile Small (max-width: 480px) --- */
+@media (max-width: 480px) {
+  html { font-size: 14px; }
+  
+  .container { padding: 0 16px; }
+  
+  /* Header */
+  .brand-name { font-size: 0.95rem; }
+  .brand-logo { width: 36px; height: 36px; }
+  .brand { gap: 8px; }
+  
+  /* Hero */
+  .hero { padding: 40px 0 30px; }
+  .hero-copy .display { font-size: clamp(1.5rem, 8vw, 2rem); }
+  .hero-badge { 
+    padding: 8px 14px; 
+    font-size: 0.72rem;
+  }
+  .lead { font-size: 0.9rem; line-height: 1.6; }
+  .plate-float { height: 180px; border-radius: 16px; }
+  .hero-scroll-hint { 
+    margin-top: 30px; 
+    font-size: 0.8rem;
+  }
+  .scroll-arrow { width: 16px; height: 16px; }
+  
+  /* Sections */
+  .section { padding: 50px 0; }
+  .section-title { font-size: 1.4rem; }
+  .section-intro { font-size: 0.9rem; }
+  
+  /* About */
+  .about-media { height: 220px; }
+  .about-badge { 
+    padding: 10px 18px; 
+    font-size: 0.85rem;
+    bottom: -12px;
+    right: -8px;
+  }
+  .about-copy p { font-size: 0.95rem; }
+  .about-features { gap: 16px; }
+  .feature { font-size: 0.82rem; }
+  .feature-icon { font-size: 1.1rem; }
+  
+  /* Menu */
+  .menu-card { 
+    padding: 22px 18px; 
+    border-radius: 16px;
+  }
+  .menu-card-icon { font-size: 2rem; margin-bottom: 12px; }
+  .menu-card h3 { font-size: 1.05rem; }
+  .menu-card .muted { font-size: 0.88rem; }
+  .menu-card .price { 
+    padding: 6px 14px; 
+    font-size: 0.82rem;
+  }
+  
+  /* Specials */
+  .special-item { padding: 22px 18px; border-radius: 16px; }
+  .special-item h3 { font-size: 1.1rem; }
+  .special-tag { font-size: 0.7rem; padding: 5px 12px; }
+  
+  /* Reservation */
+  .reservation-form { 
+    padding: 24px 18px; 
+    border-radius: 16px;
+  }
+  .reservation-form .form-control { 
+    padding: 12px 14px; 
+    font-size: 0.9rem;
+  }
+  .reservation-info .section-title { font-size: 1.3rem; }
+  .reservation-contact { padding: 18px; }
+  .contact-icon { 
+    width: 38px; 
+    height: 38px; 
+    font-size: 1rem;
+  }
+  
+  /* Contact */
+  .contact-info-card { 
+    padding: 24px 18px; 
+    border-radius: 16px;
+  }
+  .contact-info-card .section-title { font-size: 1.3rem; }
+  .contact-row p, .contact-row a { font-size: 0.9rem; }
+  .social-link { width: 40px; height: 40px; font-size: 1rem; }
+  .map-container { border-radius: 16px; }
+  .map-container iframe { min-height: 220px; }
+  
+  /* Buttons */
+  .btn { 
+    padding: 14px 20px; 
+    font-size: 0.88rem;
+  }
+  .btn-primary { padding: 14px 24px; }
+  
+  /* Chatbot */
+  .chat-fab { 
+    width: 56px; 
+    height: 56px; 
+    font-size: 1.3rem;
+    right: 16px;
+    bottom: 16px;
+  }
+  .chat-window {
+    right: 10px;
+    left: 10px;
+    bottom: 84px;
+    width: auto;
+    max-height: calc(100vh - 110px);
+    border-radius: 16px;
+  }
+  .chat-head { padding: 12px 14px; }
+  .chat-head .logo { width: 36px; height: 36px; font-size: 0.9rem; }
+  .chat-head .name { font-size: 0.95rem; }
+  .chat-head .status { font-size: 0.75rem; }
+  .chat-close { font-size: 1.3rem; }
+  .chat-body { padding: 12px; max-height: 250px; }
+  .bubble { 
+    padding: 10px 12px; 
+    font-size: 0.85rem; 
+    max-width: 85%;
+  }
+  .chat-quick { padding: 8px 12px; gap: 6px; }
+  .chat-quick button { 
+    padding: 6px 10px; 
+    font-size: 0.75rem;
+  }
+  .chat-input-wrap { padding: 10px 12px; gap: 8px; }
+  .chat-input-wrap input { 
+    padding: 10px 12px; 
+    font-size: 0.85rem;
+  }
+  .chat-send { width: 38px; height: 38px; font-size: 1rem; }
+}
+
+/* --- Extra Small (max-width: 360px) --- */
+@media (max-width: 360px) {
+  .container { padding: 0 12px; }
+  
+  .hero-copy .display { font-size: 1.4rem; }
+  .hero-badge { font-size: 0.68rem; padding: 6px 12px; }
+  
+  .section { padding: 40px 0; }
+  .section-title { font-size: 1.25rem; }
+  
+  .menu-card { padding: 18px 14px; }
+  .special-item { padding: 18px 14px; }
+  
+  .reservation-form { padding: 20px 14px; }
+  .contact-info-card { padding: 20px 14px; }
+  
+  .btn { padding: 12px 18px; font-size: 0.85rem; }
+}
+
+/* --- Landscape Mobile Fix --- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero { padding: 30px 0 20px; }
+  .hero-grid { gap: 20px; }
+  .plate-float { height: 150px; }
+  .hero-scroll-hint { display: none; }
+  
+  .section { padding: 40px 0; }
+  
+  .chat-window { max-height: calc(100vh - 20px); bottom: 10px; }
+  .chat-body { max-height: 150px; }
+}
+
+/* --- Touch Device Optimizations --- */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .nav-list a { padding: 14px 0; }
+  .btn { min-height: 48px; }
+  .form-control { min-height: 48px; }
+  .chat-quick button { min-height: 40px; padding: 10px 14px; }
+  .social-link { min-width: 48px; min-height: 48px; }
+  
+  /* Remove hover effects that don't work well on touch */
+  .card:hover { transform: none; }
+  .menu-card:hover { transform: none; }
+  .special-item:hover { transform: none; }
+  .glass-card:hover { transform: none; }
+  .btn-primary:hover { transform: none; }
+  .btn-ghost:hover { transform: none; }
+  
+  /* Active states for touch feedback */
+  .btn:active { transform: scale(0.98); }
+  .card:active { transform: scale(0.99); }
+  .nav-list a:active { color: var(--gold); }
+}
+
+/* --- Safe Area for Notched Phones --- */
+@supports (padding: max(0px)) {
+  .site-header {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+  .container {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+  .chat-fab {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  .site-footer {
+    padding-bottom: max(32px, env(safe-area-inset-bottom));
+  }
+}
