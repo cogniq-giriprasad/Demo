@@ -143,11 +143,7 @@
   };
 
   ChatWidget.prototype.bind = function () {
-    // Click event for desktop
-    this.fab.addEventListener('click', (e) => {
-      if (!this.wasDragged) this.toggle();
-      this.wasDragged = false;
-    });
+    this.fab.addEventListener('click', () => this.toggle());
     
     this.closeBtn.addEventListener('click', () => this.close());
     this.sendBtn.addEventListener('click', () => this.send());
@@ -161,100 +157,6 @@
     });
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') this.close(); });
-
-    // Make FAB draggable
-    this.makeDraggable();
-  };
-
-  ChatWidget.prototype.makeDraggable = function () {
-    const fab = this.fab;
-    const self = this;
-    let isDragging = false;
-    let startX, startY, startRight, startBottom;
-    let hasMoved = false;
-    let touchStartTime = 0;
-
-    const onStart = (e) => {
-      isDragging = true;
-      hasMoved = false;
-      touchStartTime = Date.now();
-      fab.classList.add('dragging');
-      
-      const touch = e.touches ? e.touches[0] : e;
-      startX = touch.clientX;
-      startY = touch.clientY;
-      
-      const rect = fab.getBoundingClientRect();
-      startRight = window.innerWidth - rect.right;
-      startBottom = window.innerHeight - rect.bottom;
-      
-      if (e.touches) {
-        e.preventDefault();
-      }
-    };
-
-    const onMove = (e) => {
-      if (!isDragging) return;
-      
-      const touch = e.touches ? e.touches[0] : e;
-      const deltaX = startX - touch.clientX;
-      const deltaY = startY - touch.clientY;
-      
-      // Only consider it a drag if moved more than 10px
-      if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
-        hasMoved = true;
-      }
-      
-      if (!hasMoved) return; // Don't move until threshold is exceeded
-      
-      let newRight = startRight + deltaX;
-      let newBottom = startBottom + deltaY;
-      
-      // Keep within bounds
-      const fabSize = 64;
-      const padding = 12;
-      newRight = Math.max(padding, Math.min(window.innerWidth - fabSize - padding, newRight));
-      newBottom = Math.max(padding, Math.min(window.innerHeight - fabSize - padding, newBottom));
-      
-      fab.style.right = newRight + 'px';
-      fab.style.bottom = newBottom + 'px';
-      
-      if (e.touches) {
-        e.preventDefault();
-      }
-    };
-
-    const onEnd = (e) => {
-      if (!isDragging) return;
-      isDragging = false;
-      fab.classList.remove('dragging');
-      
-      const touchDuration = Date.now() - touchStartTime;
-      
-      // If it was a quick tap (< 200ms) and didn't move, open the chat
-      if (!hasMoved && touchDuration < 300) {
-        // For touch, we handle click here since click event may not fire reliably
-        if (e.type === 'touchend') {
-          e.preventDefault();
-          self.toggle();
-        }
-        self.wasDragged = false;
-      } else if (hasMoved) {
-        self.wasDragged = true;
-        // Reset wasDragged after a short delay to allow the next tap
-        setTimeout(() => { self.wasDragged = false; }, 100);
-      }
-    };
-
-    // Mouse events
-    fab.addEventListener('mousedown', onStart);
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onEnd);
-
-    // Touch events - handle tap directly for mobile
-    fab.addEventListener('touchstart', onStart, { passive: false });
-    document.addEventListener('touchmove', onMove, { passive: false });
-    document.addEventListener('touchend', onEnd, { passive: false });
   };
 
   ChatWidget.prototype.toggle = function () {
@@ -262,35 +164,6 @@
   };
 
   ChatWidget.prototype.openChat = function () {
-    // Position chat window relative to FAB
-    const fabRect = this.fab.getBoundingClientRect();
-    const fabRight = window.innerWidth - fabRect.right;
-    const fabBottom = window.innerHeight - fabRect.bottom;
-    
-    // Position chat window above the FAB
-    this.win.style.right = fabRight + 'px';
-    this.win.style.bottom = (fabBottom + 76) + 'px';
-    
-    // Ensure chat window stays within viewport
-    const winWidth = 360;
-    const winHeight = 450;
-    let adjustedRight = fabRight;
-    let adjustedBottom = fabBottom + 76;
-    
-    // Check right edge
-    if (adjustedRight < 12) adjustedRight = 12;
-    if (adjustedRight + winWidth > window.innerWidth - 12) {
-      adjustedRight = window.innerWidth - winWidth - 12;
-    }
-    
-    // Check top edge (if chat would go above viewport)
-    if (adjustedBottom + winHeight > window.innerHeight - 12) {
-      adjustedBottom = window.innerHeight - winHeight - 12;
-    }
-    
-    this.win.style.right = adjustedRight + 'px';
-    this.win.style.bottom = adjustedBottom + 'px';
-    
     this.win.classList.add('open');
     this.win.setAttribute('aria-hidden', 'false');
     this.open = true;
@@ -464,11 +337,31 @@
   }
 
   /* ---------- INIT ---------- */
+  /* ---------- IMAGE HOVER WITH FOOD NAMES ---------- */
+  function initImageHover() {
+    const images = $$('img[data-food]');
+    images.forEach(img => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'image-hover-wrapper';
+      wrapper.style.position = 'relative';
+      wrapper.style.display = 'inline-block';
+      
+      const overlay = document.createElement('div');
+      overlay.className = 'image-hover-overlay';
+      overlay.textContent = img.getAttribute('data-food');
+      
+      img.parentNode.insertBefore(wrapper, img);
+      wrapper.appendChild(img);
+      wrapper.appendChild(overlay);
+    });
+  }
+
   function init() {
     initNav();
     initReveal();
     initScrollHint();
     initReservation();
+    initImageHover();
     new ChatWidget();
 
     // Footer year
